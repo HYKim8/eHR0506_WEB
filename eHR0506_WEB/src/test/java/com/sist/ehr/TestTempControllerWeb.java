@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -31,6 +33,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.WebApplicationContext;
@@ -89,6 +92,27 @@ public class TestTempControllerWeb {
 
 	}
 	
+
+	@Test
+	public void doRetrieve() throws Exception {
+		MockHttpServletRequestBuilder createMessage = 
+				MockMvcRequestBuilders.get("/member/do_retrieve.do")
+				.param("page_size", "10")
+				.param("page_num", "1")
+				.param("search_div", "")
+				.param("search_word", "")
+				;		
+		ResultActions  resultActions = mockMvc.perform(createMessage)
+				.andExpect(status().is2xxSuccessful());
+		String result = resultActions.andDo(print())
+				.andReturn()
+				.getResponse().getContentAsString();
+				
+		LOG.debug("========================");
+		LOG.debug("=result="+result);
+		LOG.debug("========================");
+		
+	}
 	
 	private String update(UserVO user)throws Exception {
 		MockHttpServletRequestBuilder createMessage = 
@@ -124,6 +148,7 @@ public class TestTempControllerWeb {
 	}
 	
 	@Test
+	@Ignore
 	public void doUpdate() throws Exception {
 		LOG.debug("=====================");		
 		LOG.debug("=1.삭제=");		
@@ -150,9 +175,6 @@ public class TestTempControllerWeb {
 			String one = update(user);
 			assertThat(one, is("1"));
 		}
-		
-		
-		
 		
 		
 	}
