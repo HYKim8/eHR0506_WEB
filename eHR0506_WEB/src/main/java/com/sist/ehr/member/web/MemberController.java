@@ -52,6 +52,8 @@ public class MemberController {
 		search.setSearchDiv(StringUtil.nvl(search.getSearchDiv()));
 		//검색어
 		search.setSearchWord(StringUtil.nvl(search.getSearchWord()));
+		model.addAttribute("param", search);
+		
 		LOG.debug("1.2===================");
 		LOG.debug("1.2=search="+search);
 		LOG.debug("1.2===================");
@@ -63,6 +65,15 @@ public class MemberController {
 		}
 		LOG.debug("1.3===================");		
 		model.addAttribute("list", list);
+		
+		//총글수
+		int totalCnt = 0;
+		if(null != list && list.size()>0) {
+			totalCnt = list.get(0).getTotalCnt();
+		}
+		model.addAttribute("totalCnt", totalCnt);
+		
+		
 		//member/member_mng  -> /+member/member_mng+.jsp
 		return "member/member_mng";
 	}
