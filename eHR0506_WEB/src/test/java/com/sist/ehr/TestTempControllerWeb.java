@@ -90,17 +90,16 @@ public class TestTempControllerWeb {
 	}
 	
 	
-	@Test
-	public void doUpdate() throws Exception {
+	private String update(UserVO user)throws Exception {
 		MockHttpServletRequestBuilder createMessage = 
 				MockMvcRequestBuilders.post("/member/do_update.do")
-				.param("u_id", users.get(0).getU_id())
-				.param("name", users.get(0).getName()+"_u")
-				.param("passwd", users.get(0).getPasswd()+"_u")
-				.param("level", users.get(0).getLevel()+"")
-				.param("login", users.get(0).getLogin()+"")
-				.param("recommend", users.get(0).getRecommend()+"")
-				.param("email", users.get(0).getEmail()+"_u")
+				.param("u_id", user.getU_id())
+				.param("name", user.getName()+"_u")
+				.param("passwd", user.getPasswd()+"_u")
+				.param("level", user.getLevel()+"")
+				.param("login", user.getLogin()+"")
+				.param("recommend", user.getRecommend()+"")
+				.param("email", user.getEmail()+"_u")
 				;
 		
 		ResultActions  resultActions =mockMvc.perform(createMessage)
@@ -120,7 +119,42 @@ public class TestTempControllerWeb {
 		LOG.debug("=====================");			
 		LOG.debug("=====================");
 		LOG.debug("=result="+result);
-		LOG.debug("=====================");  	
+		LOG.debug("=====================");		
+		return outVO.getMsgId();
+	}
+	
+	@Test
+	public void doUpdate() throws Exception {
+		LOG.debug("=====================");		
+		LOG.debug("=1.삭제=");		
+		LOG.debug("=====================");		
+		
+		for(UserVO user :users) {
+			doDelete(user);
+		}
+		
+		LOG.debug("=====================");		
+		LOG.debug("=2.등록=");		
+		LOG.debug("=====================");		
+		for(UserVO user :users) {
+			String one = add(user);
+			assertThat(one, is("1"));
+		}
+		
+		LOG.debug("=====================");		
+		LOG.debug("=3.update=");		
+		LOG.debug("=====================");
+		
+		
+		for(UserVO user :users) {
+			String one = update(user);
+			assertThat(one, is("1"));
+		}
+		
+		
+		
+		
+		
 	}
 	
 	
