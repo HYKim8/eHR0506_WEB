@@ -89,8 +89,44 @@ public class TestTempControllerWeb {
 
 	}
 	
+	
+	@Test
+	public void doUpdate() throws Exception {
+		MockHttpServletRequestBuilder createMessage = 
+				MockMvcRequestBuilders.post("/member/do_update.do")
+				.param("u_id", users.get(0).getU_id())
+				.param("name", users.get(0).getName()+"_u")
+				.param("passwd", users.get(0).getPasswd()+"_u")
+				.param("level", users.get(0).getLevel()+"")
+				.param("login", users.get(0).getLogin()+"")
+				.param("recommend", users.get(0).getRecommend()+"")
+				.param("email", users.get(0).getEmail()+"_u")
+				;
+		
+		ResultActions  resultActions =mockMvc.perform(createMessage)
+				       .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+				       .andExpect(MockMvcResultMatchers.jsonPath("$.msgId", is("1")))
+				;
+		String result = resultActions.andDo(print())
+						.andReturn()
+						.getResponse().getContentAsString();
+		
+		//Json String to UserVO
+		Gson gson=new Gson();
+		MessageVO outVO =gson.fromJson(result, MessageVO.class);
+		
+		LOG.debug("=====================");
+		LOG.debug("=outVO="+outVO);
+		LOG.debug("=====================");			
+		LOG.debug("=====================");
+		LOG.debug("=result="+result);
+		LOG.debug("=====================");  	
+	}
+	
+	
 	//삭제,등록,단건조회
 	@Test
+	@Ignore
 	public void addAndGet()throws Exception{
 		LOG.debug("=====================");		
 		LOG.debug("=1.삭제=");		
