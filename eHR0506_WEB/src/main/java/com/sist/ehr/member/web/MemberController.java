@@ -90,8 +90,42 @@ public class MemberController {
 	
 	
 	
-	
-	
+	@RequestMapping(value = "member/do_update.do",method = RequestMethod.POST
+			,produces = "application/json;charset=UTF-8")
+	@ResponseBody	
+	public String doUpdate(UserVO user) {
+		LOG.debug("1===================");
+		LOG.debug("1=user="+user);
+		LOG.debug("1===================");
+		
+		int  flag = userService.doUpdate(user);
+		LOG.debug("1.2===================");
+		LOG.debug("1.2=flag="+flag); 
+		LOG.debug("1.2===================");
+		
+		//메시지 처리
+		MessageVO message=new MessageVO();
+
+		message.setMsgId(flag+"");
+		//성공
+		if(flag ==1) {
+			message.setMsgMsg(user.getName()+"님이 수정 되었습니다.");
+		//실패	
+		}else {
+			message.setMsgMsg(user.getName()+"님 등록 실패.");			
+		}		
+		
+		//JSON
+		Gson gson=new Gson();
+		String json = gson.toJson(message);
+		
+		LOG.debug("1.3===================");
+		LOG.debug("1.3=json="+json); 
+		LOG.debug("1.3===================");		
+		
+		return json;
+		
+	}
 	
 	
 	@RequestMapping(value = "member/add.do",method = RequestMethod.POST
