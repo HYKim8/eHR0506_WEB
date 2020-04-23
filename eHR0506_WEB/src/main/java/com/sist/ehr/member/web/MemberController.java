@@ -1,11 +1,15 @@
 package com.sist.ehr.member.web;
 
+import java.util.List;
+
 import javax.inject.Qualifier;
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -13,6 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
 import com.sist.ehr.cmn.DTO;
 import com.sist.ehr.cmn.MessageVO;
+import com.sist.ehr.cmn.SearchVO;
+import com.sist.ehr.cmn.StringUtil;
 import com.sist.ehr.member.service.UserService;
 import com.sist.ehr.member.service.UserVO;
 
@@ -24,6 +30,42 @@ public class MemberController {
 	//@Qualifier("dummyMailSender") : root-context.xml bean id
 	@Autowired
 	UserService userService;
+	
+	
+	@RequestMapping(value="member/do_retrieve.do",method = RequestMethod.GET)
+	public String doRetrieve(HttpServletRequest req,SearchVO search,Model model) {
+		LOG.debug("1===================");
+		LOG.debug("1=search="+search);
+		LOG.debug("1===================");	
+		//페이지 사이즈
+		if(search.getPageSize()==0)
+		{
+			search.setPageSize(10);
+		}
+		
+		//페이지 num
+		if(search.getPageNum()==0) {
+			search.setPageNum(1);
+		}
+		 
+		//검색구분
+		search.setSearchDiv(StringUtil.nvl(search.getSearchDiv()));
+		//검색어
+		search.setSearchWord(StringUtil.nvl(search.getSearchWord()));
+		LOG.debug("1.2===================");
+		LOG.debug("1.2=search="+search);
+		LOG.debug("1.2===================");
+		
+		List<UserVO> list =(List<UserVO>) userService.doRetrieve(search);
+		LOG.debug("1.3===================");
+		for(UserVO vo :list) {
+			LOG.debug("vo="+vo);
+		}
+		LOG.debug("1.3===================");		
+		model.addAttribute("list", list);
+		//member/member_mng  -> /+member/member_mng+.jsp
+		return "member/member_mng";
+	}
 	
 	@RequestMapping(value="member/do_select_one.do",method = RequestMethod.POST
 		       ,produces = "application/json;charset=UTF-8")
@@ -132,7 +174,7 @@ public class MemberController {
 			,produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String add(UserVO user) {
-		String url= "member/member_mng";
+		
 		LOG.debug("1===================");
 		LOG.debug("1=user="+user);
 		LOG.debug("1===================");
