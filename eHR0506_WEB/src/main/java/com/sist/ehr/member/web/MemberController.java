@@ -73,6 +73,9 @@ public class MemberController {
 		}
 		model.addAttribute("totalCnt", totalCnt);
 		
+		int maxPageNo = ((totalCnt - 1) / 10) + 1;
+		
+		model.addAttribute("maxPageNo", maxPageNo);
 		
 		//member/member_mng  -> /+member/member_mng+.jsp
 		return "member/member_mng";
